@@ -14,7 +14,8 @@ export default function App() {
     dinner: [],
   })
 
-  const mealListUrl = 'http://139.224.56.89:3009/api/allmeallist';
+  const mealListUrl = `${process.env.EXPO_PUBLIC_API_URL}/api/allmeallist`;
+  
   const getAllMealListsFromApi = async () => {
     try {
       const response = await fetch(mealListUrl);
