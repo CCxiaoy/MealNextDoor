@@ -32,22 +32,25 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>当前 {year}/{month}/{day} 17:54</Text>
-      <Text>计划-下一顿</Text>
-      <View>{(() => {
+      <Text style={styles.line}>
+        <Text style={styles.title}>当前 </Text> 
+        <Text style={styles.content}>{year}/{month}/{day} 17:54</Text>
+      </Text>
+      <Text style={{...styles.title, ...styles.line}}>计划-下一顿</Text>
+      <View style={styles.line}>{(() => {
         const now = date.getHours();
         if (now < 10) {
-          return mealLists.breakfast.length > 0 ? mealLists.breakfast.map(meal => {
-            return <Text key={meal.id}>{meal.name}</Text>
-          }) : <Text>还没想好哦</Text>
+          return mealLists.breakfast.length > 0 ? mealLists.breakfast.map((meal, i) => {
+            return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
+          }) : <Text style={styles.listItem}>还没想好哦</Text>
         } else if (now < 14) {
-          return mealLists.lunch.length > 0 ? mealLists.lunch.map(meal => {
-            return <Text key={meal.id}>{meal.name}</Text>
-          }) : <Text>还没想好哦</Text>
+          return mealLists.lunch.length > 0 ? mealLists.lunch.map((meal, i) => {
+            return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
+          }) : <Text style={styles.listItem}>还没想好哦</Text>
         } else {
-          return mealLists.dinner.length > 0 ? mealLists.dinner.map(meal => {
-            return <Text key={meal.id}>{meal.name}</Text>
-          }) : <Text>还没想好哦</Text>
+          return mealLists.dinner.length > 0 ? mealLists.dinner.map((meal, i) => {
+            return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
+          }) : <Text style={styles.listItem}>还没想好哦</Text>
         }
       })()}</View>
       <StatusBar style="auto" />
@@ -59,7 +62,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 16,
   },
+  line: {
+    marginTop: 16,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+  },
+  content: {
+    fontSize: 16,
+  },
+  listItem: {
+    fontSize: 16,
+    marginBottom: 8,
+  }
 });
