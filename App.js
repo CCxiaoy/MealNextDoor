@@ -14,14 +14,20 @@ export default function App() {
     dinner: [],
   })
 
-  const mealListUrl = `${process.env.EXPO_PUBLIC_API_URL}/api/allmeallist`;
+  const baseUrl = process.env.EXPO_PUBLIC_API_URL; // base url
+  // const mealListUrl = `${process.env.EXPO_PUBLIC_API_URL}/api/allMealLists`; // All meals (breakfastList, lunchList, dinnerList)
+  const urls = [`${baseUrl}/api/breakfastList`, `${baseUrl}/api/lunchList`, `${baseUrl}/api/dinnerList`]; // breakfast, lunch, dinner
   
   const getAllMealListsFromApi = async () => {
     try {
-      const response = await fetch(mealListUrl);
-      const json = await response.json();
-      console.log(json);
-      setMealLists(json);
+      const responses = await Promise.all(urls.map(url => fetch(url) ));
+      const [response1, response2, response3] = responses;
+
+      const { breakfast } = await response1.json();
+      const { lunch } = await response2.json();
+      const { dinner } = await response3.json();
+      console.log(breakfast, lunch, dinner);
+      setMealLists({ breakfast, lunch, dinner });
     } catch (error) {
       console.error(error);
     }
