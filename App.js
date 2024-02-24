@@ -27,7 +27,10 @@ export default function App() {
       const { lunch } = await response2.json();
       const { dinner } = await response3.json();
       console.log(breakfast, lunch, dinner);
-      setMealLists({ breakfast, lunch, dinner });
+      setMealLists({ 
+        breakfast: breakfast, 
+        lunch: lunch, 
+        dinner: dinner });
     } catch (error) {
       console.error(error);
     }
@@ -36,6 +39,42 @@ export default function App() {
     getAllMealListsFromApi();
   }, []);
 
+  const getMealElements = (mealList) => {
+    // check the current time
+    const now = date.getHours();
+    // return the meal list based on the current time
+    if (now < 10) {
+      // return title breakfast and content list of breakfast
+      return (<View style={styles.line}>
+                <Text style={styles.title}>早餐</Text>
+                {mealList.breakfast.length > 0 ? mealList.breakfast.map((meal, i) => {
+                  return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
+                }
+                ) : <Text style={styles.listItem}>还没想好哦</Text>}
+              </View>)
+    } else if (now < 14) {
+      // return title lunch and content list of lunch
+      return (<View style={styles.line}>
+                <Text style={styles.title}>午餐</Text>
+                {mealList.lunch.length > 0 ? mealList.lunch.map((meal, i) => {
+                  return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
+                }
+                ) : <Text style={styles.listItem}>还没想好哦</Text>}
+              </View>)
+    } else {
+      // return title dinner and content list of dinner
+      return (<View style={styles.line}>
+                <Text style={styles.title}>晚餐</Text>
+                {mealList.dinner.length > 0 ? mealList.dinner.map((meal, i) => {
+                  return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
+                }
+                ) : <Text style={styles.listItem}>还没想好哦</Text>}
+              </View>)
+    }
+  }
+
+  console.log(getMealElements(mealLists));
+
   return (
     <View style={styles.container}>
       <Text style={styles.line}>
@@ -43,22 +82,7 @@ export default function App() {
         <Text style={styles.content}>{year}/{month}/{day} 17:54</Text>
       </Text>
       <Text style={{...styles.title, ...styles.line}}>计划-下一顿</Text>
-      <View style={styles.line}>{(() => {
-        const now = date.getHours();
-        if (now < 10) {
-          return mealLists.breakfast.length > 0 ? mealLists.breakfast.map((meal, i) => {
-            return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
-          }) : <Text style={styles.listItem}>还没想好哦</Text>
-        } else if (now < 14) {
-          return mealLists.lunch.length > 0 ? mealLists.lunch.map((meal, i) => {
-            return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
-          }) : <Text style={styles.listItem}>还没想好哦</Text>
-        } else {
-          return mealLists.dinner.length > 0 ? mealLists.dinner.map((meal, i) => {
-            return <Text key={meal.id} style={styles.listItem}>{(i+1) + ". " +meal.name}</Text>
-          }) : <Text style={styles.listItem}>还没想好哦</Text>
-        }
-      })()}</View>
+      {getMealElements(mealLists)}
       <StatusBar style="auto" />
     </View>
   );
