@@ -1,6 +1,9 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+// import API_URL from @env and rename it to baseUrl
+import {API_URL as baseUrl} from '@env';
+
 
 function App(): React.JSX.Element {
   const date = new Date();
@@ -14,15 +17,13 @@ function App(): React.JSX.Element {
     dinner: [],
   });
 
-  const baseUrl = process.env.EXPO_PUBLIC_API_URL; // base url
-  // const mealListUrl = `${process.env.EXPO_PUBLIC_API_URL}/api/allMealLists`; // All meals (breakfastList, lunchList, dinnerList)
-  const urls = [
-    `${baseUrl}/api/breakfastList`,
-    `${baseUrl}/api/lunchList`,
-    `${baseUrl}/api/dinnerList`,
-  ]; // breakfast, lunch, dinner
-
   const getAllMealListsFromApi = async () => {
+    const urls = [
+      `${baseUrl}/api/breakfastList`,
+      `${baseUrl}/api/lunchList`,
+      `${baseUrl}/api/dinnerList`,
+    ]; // breakfast, lunch, dinner
+
     try {
       const responses = await Promise.all(urls.map(url => fetch(url)));
       const [response1, response2, response3] = responses;
@@ -36,9 +37,10 @@ function App(): React.JSX.Element {
       console.error(error);
     }
   };
+
   useEffect(() => {
     getAllMealListsFromApi();
-  });
+  }, []);
 
   const getMealElements = (mealList: any) => {
     // check the current time
@@ -51,7 +53,7 @@ function App(): React.JSX.Element {
           <Text style={styles.title}>早餐</Text>
           {mealList.breakfast.length > 0 ? (
             mealList.breakfast.map(
-              (meal: {id: string; name: string}, i: number) => {
+              (meal: {id: number; name: string, category: string}, i: number) => {
               return (
                 <Text key={meal.id} style={styles.listItem}>
                   {i + 1 + '. ' + meal.name}
@@ -70,7 +72,7 @@ function App(): React.JSX.Element {
           <Text style={styles.title}>午餐</Text>
           {mealList.lunch.length > 0 ? (
             mealList.lunch.map(
-              (meal: {id: string; name: string}, i: number) => {
+              (meal: {id: number; name: string, category: string}, i: number) => {
                 return (
                   <Text key={meal.id} style={styles.listItem}>
                     {i + 1 + '. ' + meal.name}
@@ -89,7 +91,7 @@ function App(): React.JSX.Element {
         <View style={styles.line}>
           <Text style={styles.title}>晚餐</Text>
           {mealList.dinner.length > 0 ? (
-            mealList.dinner.map((meal: { id: string; name: string }, i: number) => {
+            mealList.dinner.map((meal: { id: number; name: string, category: string }, i: number) => {
               return (
                 <Text key={meal.id} style={styles.listItem}>
                   {i + 1 + '. ' + meal.name}
@@ -109,7 +111,7 @@ function App(): React.JSX.Element {
       <Text style={styles.line}>
         <Text style={styles.title}>当前 </Text>
         <Text style={styles.content}>
-          {year}/{month}/{day} 17:54
+          {year}/{month}/{day} 4:07 AM
         </Text>
       </Text>
       <Text style={{...styles.title, ...styles.line}}>计划-下一顿</Text>
