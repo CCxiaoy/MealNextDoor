@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import { StyleSheet, Text, TextInput, View} from 'react-native';
 // import API_URL from @env and rename it to baseUrl
 import {API_URL as baseUrl} from '@env';
 
