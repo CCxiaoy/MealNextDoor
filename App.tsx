@@ -166,7 +166,12 @@ function App(): React.JSX.Element {
       <Text style={styles.line}>
         <Text style={styles.title}>当前 </Text>
         <Text style={styles.content}>
-          {year}/{month}/{day} 4:07 AM
+          {year}/{month}/{day}
+          {/* current time in this form xx:xx hour:minute like 04:07  */}
+          {' '}
+          {date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}
+          :
+          {date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}
         </Text>
       </Text>
       <Text style={{...styles.title, ...styles.line}}>计划-下一顿</Text>
