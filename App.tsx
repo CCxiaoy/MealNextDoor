@@ -158,13 +158,14 @@ function App(): React.JSX.Element {
     // check if newMealText is empty
     if (newMealText === '') {
       informationPrompt('请输入食物名字!');
-      return;
+      return true;
     }
     // check if newMealCategory is empty
     else if (newMealCategory === '') {
       informationPrompt('请选择食物类型!');
-      return;
+      return true;
     }
+    return false;
   };
 
   // show user the prompt information success if they add a new meal successfully
@@ -179,7 +180,10 @@ function App(): React.JSX.Element {
 
   // add new meal to the list, need to pass the meal name and category as the body in post request type
   const addNewMeal = async () => {
-    isInputEmpty(); // check if the input is empty
+    // check if the input is empty
+    if (isInputEmpty()) {
+      return;
+    }
     try {
       const response = await fetch(`${baseUrl}/api/addMealItem`, {
         method: 'POST',
