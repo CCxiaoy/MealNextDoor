@@ -177,7 +177,12 @@ function App(): React.JSX.Element {
       {getMealElements(mealLists)}
       <View style={styles.newMealContainer}>
         <View style={styles.newMealInput}>
-          <TextInput value={newMealText} onChangeText={setNewMealText} style={styles.inputNewMeal} />
+          <TextInput
+            value={newMealText}
+            onChangeText={setNewMealText}
+            placeholder="还想吃些什么!?"
+            style={styles.inputNewMeal}
+          />
           {/* <TextInput value={newMealCategory} onChangeText={setNewMealCategory} style={styles.inputNewMealCategory} /> */}
           <Picker
             selectedValue={newMealCategory}
