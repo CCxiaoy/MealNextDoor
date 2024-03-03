@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, TextInput, View} from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View} from 'react-native';
 import {API_URL as baseUrl} from '@env'; // import API_URL from @env and rename it to baseUrl
 import {Picker} from '@react-native-picker/picker';
 
@@ -17,6 +17,11 @@ function App(): React.JSX.Element {
   });
   const [newMealText, setNewMealText] = useState('');
   const [newMealCategory, setNewMealCategory] = useState('');
+
+  // call alert to show the prompt information
+  const informationPrompt = (message : string) => {
+    Alert.alert(message);
+  };
 
   const getAllMealListsFromApi = async () => {
     const urls = [
@@ -60,7 +65,7 @@ function App(): React.JSX.Element {
                   <Text>{i + 1 + '. ' + meal.name}</Text>
                   <Text
                     onPress={() => deleteMeal(meal.id)}
-                    style={styles.buttons}>
+                    style={[styles.buttons, styles.deleteButton]}>
                       删除
                   </Text>
                 </View>
@@ -84,7 +89,7 @@ function App(): React.JSX.Element {
                     <Text>{i + 1 + '. ' + meal.name}</Text>
                   <Text
                     onPress={() => deleteMeal(meal.id)}
-                    style={styles.buttons}>
+                    style={[styles.buttons, styles.deleteButton]}>
                       删除
                   </Text>
                   </View>
@@ -108,7 +113,7 @@ function App(): React.JSX.Element {
                   <Text>{i + 1 + '. ' + meal.name}</Text>
                   <Text
                     onPress={() => deleteMeal(meal.id)}
-                    style={styles.buttons}>
+                    style={[styles.buttons, styles.deleteButton]}>
                       删除
                   </Text>
                 </View>
@@ -122,6 +127,16 @@ function App(): React.JSX.Element {
     }
   };
 
+  // show user the prompt information success if they delete a meal successfully
+  const deleteSuccess = () => {
+    informationPrompt('删除成功!');
+  };
+
+  // show user the prompt information fail if they delete a meal fail
+  const deleteFail = () => {
+    informationPrompt('删除失败!');
+  };
+
   // delete meal from the list, need to pass the meal id as the params in delete request type
   const deleteMeal = async (mealId: number) => {
     try {
@@ -131,14 +146,40 @@ function App(): React.JSX.Element {
       const data = await response.json();
       console.log(data);
       getAllMealListsFromApi(); // refresh the meal list
+      deleteSuccess(); // show the prompt information
     } catch (error) {
       console.error(error);
+      deleteFail(); // show the prompt information
     }
+  };
+
+  // empty check for new meal input
+  const isInputEmpty = () => {
+    // check if newMealText is empty
+    if (newMealText === '') {
+      informationPrompt('请输入食物名字!');
+      return;
+    }
+    // check if newMealCategory is empty
+    else if (newMealCategory === '') {
+      informationPrompt('请选择食物类型!');
+      return;
+    }
+  };
+
+  // show user the prompt information success if they add a new meal successfully
+  const addSuccess = () => {
+    informationPrompt('添加成功!');
+  };
+
+  // show user the prompt information fail if they add a new meal fail
+  const addFail = () => {
+    informationPrompt('添加失败!');
   };
 
   // add new meal to the list, need to pass the meal name and category as the body in post request type
   const addNewMeal = async () => {
-    console.log(newMealText, newMealCategory);
+    isInputEmpty(); // check if the input is empty
     try {
       const response = await fetch(`${baseUrl}/api/addMealItem`, {
         method: 'POST',
@@ -155,8 +196,10 @@ function App(): React.JSX.Element {
       setNewMealText(''); // clear the input box
       setNewMealCategory(''); // clear the input box
       getAllMealListsFromApi(); // refresh the meal list
+      addSuccess(); // show the prompt information
     } catch (error) {
       console.error(error);
+      addFail(); // show the prompt information
     }
   };
 
@@ -183,14 +226,13 @@ function App(): React.JSX.Element {
             placeholder="还想吃些什么!?"
             style={styles.inputNewMeal}
           />
-          {/* <TextInput value={newMealCategory} onChangeText={setNewMealCategory} style={styles.inputNewMealCategory} /> */}
           <Picker
             selectedValue={newMealCategory}
             onValueChange={(itemValue) => setNewMealCategory(itemValue)}
             style={styles.selectNewMealCategory}
           >
             {/* placeholder */}
-            <Picker.Item enabled={false} label="类型" value={null} />
+            <Picker.Item enabled={false} label="类型" value="" />
             {/* real options */}
             <Picker.Item label="早餐" value="breakfast" />
             <Picker.Item label="午餐" value="lunch" />
@@ -272,6 +314,12 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginRight: -16,
+    borderRadius: 8,
+    backgroundColor: '#96EABD',
+  },
+  deleteButton: {
+    borderRadius: 8,
+    backgroundColor: '#FF6B6B',
   },
 });
 
