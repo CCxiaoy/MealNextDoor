@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, TextInput, View} from 'react-native';
-// import API_URL from @env and rename it to baseUrl
-import {API_URL as baseUrl} from '@env';
-
+import {API_URL as baseUrl} from '@env'; // import API_URL from @env and rename it to baseUrl
+import {Picker} from '@react-native-picker/picker';
 
 function App(): React.JSX.Element {
   const date = new Date();
@@ -139,6 +138,7 @@ function App(): React.JSX.Element {
 
   // add new meal to the list, need to pass the meal name and category as the body in post request type
   const addNewMeal = async () => {
+    console.log(newMealText, newMealCategory);
     try {
       const response = await fetch(`${baseUrl}/api/addMealItem`, {
         method: 'POST',
@@ -160,7 +160,6 @@ function App(): React.JSX.Element {
     }
   };
 
-
   return (
     <View style={styles.container}>
       <Text style={styles.line}>
@@ -179,7 +178,19 @@ function App(): React.JSX.Element {
       <View style={styles.newMealContainer}>
         <View style={styles.newMealInput}>
           <TextInput value={newMealText} onChangeText={setNewMealText} style={styles.inputNewMeal} />
-          <TextInput value={newMealCategory} onChangeText={setNewMealCategory} style={styles.inputNewMealCategory} />
+          {/* <TextInput value={newMealCategory} onChangeText={setNewMealCategory} style={styles.inputNewMealCategory} /> */}
+          <Picker
+            selectedValue={newMealCategory}
+            onValueChange={(itemValue) => setNewMealCategory(itemValue)}
+            style={styles.selectNewMealCategory}
+          >
+            {/* placeholder */}
+            <Picker.Item enabled={false} label="类型" value={null} />
+            {/* real options */}
+            <Picker.Item label="早餐" value="breakfast" />
+            <Picker.Item label="午餐" value="lunch" />
+            <Picker.Item label="晚餐" value="dinner" />
+          </Picker>
         </View>
         <Text
           onPress={addNewMeal}
@@ -230,6 +241,7 @@ const styles = StyleSheet.create({
   newMealInput: {
     flexDirection: 'row',
     width: '80%',
+    alignItems: 'center',
   },
   inputNewMeal: {
     // Top-left and bottom-left radius of the input box should be 10
@@ -243,16 +255,10 @@ const styles = StyleSheet.create({
     // height just bigger enough to show the text
     height: 32,
   },
-  inputNewMealCategory: {
-    // Top-left and bottom-left radius of the input box should be 10
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    borderColor: '#707070',
-    borderStyle: 'solid',
+  selectNewMealCategory: {
+    width: 120,
+    borderColor: 'black',
     borderWidth: 1,
-    fontSize: 8,
-    width: '30%',
-    height: 32,
   },
   buttons: {
     width: '12%',
