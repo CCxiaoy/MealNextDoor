@@ -9,7 +9,14 @@ function App(): React.JSX.Element {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-
+  // initialize the current meal period according to the current time
+  const [currentMealPeriod, setCurrentMealPeriod] = useState(
+    date.getHours() < 10
+      ? 'breakfast'
+      : date.getHours() < 14
+      ? 'lunch'
+      : 'dinner',
+  ); // ['breakfast', 'lunch', 'dinner']
   const [mealLists, setMealLists] = useState({
     breakfast: [],
     lunch: [],
@@ -49,14 +56,12 @@ function App(): React.JSX.Element {
   }, []);
 
   const getMealElements = (mealList: any) => {
-    // check the current time
-    const now = date.getHours();
-    // return the meal list based on the current time
-    if (now < 10) {
+    // return the meal list based on the currentMealPeriod
+    if (currentMealPeriod === 'breakfast') {
       // return title breakfast and content list of breakfast
       return (
         <View style={styles.line}>
-          <Text style={styles.title}>早餐</Text>
+          {/* <Text style={styles.title}>早餐</Text> */}
           {mealList.breakfast.length > 0 ? (
             mealList.breakfast.map(
               (meal: {id: number; name: string, category: string}, i: number) => {
@@ -76,11 +81,11 @@ function App(): React.JSX.Element {
           )}
         </View>
       );
-    } else if (now < 14) {
+    } else if (currentMealPeriod === 'lunch') {
       // return title lunch and content list of lunch
       return (
         <View style={styles.line}>
-          <Text style={styles.title}>午餐</Text>
+          {/* <Text style={styles.title}>午餐</Text> */}
           {mealList.lunch.length > 0 ? (
             mealList.lunch.map(
               (meal: {id: number; name: string, category: string}, i: number) => {
@@ -105,7 +110,7 @@ function App(): React.JSX.Element {
       // return title dinner and content list of dinner
       return (
         <View style={styles.line}>
-          <Text style={styles.title}>晚餐</Text>
+          {/* <Text style={styles.title}>晚餐</Text> */}
           {mealList.dinner.length > 0 ? (
             mealList.dinner.map((meal: { id: number; name: string, category: string }, i: number) => {
               return (
@@ -220,7 +225,18 @@ function App(): React.JSX.Element {
           {date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}
         </Text>
       </Text>
-      <Text style={{...styles.title, ...styles.line}}>计划-下一顿</Text>
+      <View style={styles.listHeaderContainer}>
+        <Text style={{...styles.title, ...styles.line}}>来看看吃什么吧！</Text>
+        <Picker
+          selectedValue={currentMealPeriod}
+          onValueChange={(itemValue) => setCurrentMealPeriod(itemValue)}
+          style={styles.selectCurrentMealPeriod}
+        >
+          <Picker.Item label="早餐" value="breakfast" />
+          <Picker.Item label="午餐" value="lunch" />
+          <Picker.Item label="晚餐" value="dinner" />
+        </Picker>
+      </View>
       {getMealElements(mealLists)}
       <View style={styles.newMealContainer}>
         <View style={styles.newMealInput}>
@@ -259,6 +275,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
   },
+  listHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   line: {
     marginTop: 16,
   },
@@ -266,6 +286,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     fontStyle: 'italic',
+  },
+  selectCurrentMealPeriod: {
+    width: 120,
+    borderColor: 'black',
+    borderWidth: 1,
   },
   content: {
     fontSize: 16,
