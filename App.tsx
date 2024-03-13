@@ -33,6 +33,89 @@ function App(): React.JSX.Element {
     Alert.alert(message);
   };
 
+  const reuseOperationPrompt = (name: string, category: string) => {
+    Alert.alert(
+      '复用信息',
+      '请选择要复用的就餐时段',
+      // the buttons in the prompt, exclude the category of the meal itself
+      (() => {
+        if (category === 'breakfast') {
+          return [{
+            text: '午餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'lunch');
+            },
+          }, {
+            text: '晚餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'dinner');
+            },
+          }, {
+            text: '夜宵',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'midnight');
+            },
+          }];
+        } else if (category === 'lunch') {
+          return [{
+            text: '早餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'breakfast');
+            },
+          }, {
+            text: '晚餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'dinner');
+            },
+          }, {
+            text: '夜宵',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'midnight');
+            },
+          }];
+        } else if (category === 'dinner') {
+          return [{
+            text: '早餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'breakfast');
+            },
+          }, {
+            text: '午餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'lunch');
+            },
+          }, {
+            text: '夜宵',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'midnight');
+            },
+          }];
+        } else {
+          return [{
+            text: '早餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'breakfast');
+            },
+          }, {
+            text: '午餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'lunch');
+            },
+          }, {
+            text: '晚餐',
+            onPress: () => {
+              reuseCreateNewMeal(name, 'dinner');
+            },
+          }];
+        }
+      })(),
+      {
+        cancelable: true,
+      }
+    );
+  };
+
+  // get all meal lists from the api
   const getAllMealListsFromApi = async () => {
     const urls = [
       `${baseUrl}/api/breakfastList`,
@@ -73,11 +156,21 @@ function App(): React.JSX.Element {
               return (
                 <View key={meal.id} style={styles.listItem}>
                   <Text>{i + 1 + '. ' + meal.name}</Text>
-                  <Text
-                    onPress={() => deleteMeal(meal.id)}
-                    style={[styles.buttons, styles.deleteButton]}>
-                      删除
-                  </Text>
+                  <View
+                    style={styles.listButtonsContainer}
+                  >
+                    <Text
+                      style={[styles.buttons, styles.reuseButton]}
+                      onPress={() => {reuseOperationPrompt(meal.name, meal.category);}}
+                    >
+                      复用
+                    </Text>
+                    <Text
+                      onPress={() => deleteMeal(meal.id)}
+                      style={[styles.buttons, styles.deleteButton]}>
+                        删除
+                    </Text>
+                  </View>
                 </View>
               );
             })
@@ -97,11 +190,21 @@ function App(): React.JSX.Element {
                 return (
                   <View key={meal.id} style={styles.listItem}>
                     <Text>{i + 1 + '. ' + meal.name}</Text>
-                  <Text
-                    onPress={() => deleteMeal(meal.id)}
-                    style={[styles.buttons, styles.deleteButton]}>
-                      删除
-                  </Text>
+                    <View
+                      style={styles.listButtonsContainer}
+                    >
+                      <Text
+                        style={[styles.buttons, styles.reuseButton]}
+                        onPress={() => {reuseOperationPrompt(meal.name, meal.category);}}
+                      >
+                        复用
+                      </Text>
+                      <Text
+                        onPress={() => deleteMeal(meal.id)}
+                        style={[styles.buttons, styles.deleteButton]}>
+                          删除
+                      </Text>
+                    </View>
                   </View>
                 );
               },
@@ -121,11 +224,21 @@ function App(): React.JSX.Element {
               return (
                 <View key={meal.id} style={styles.listItem}>
                   <Text>{i + 1 + '. ' + meal.name}</Text>
-                  <Text
-                    onPress={() => deleteMeal(meal.id)}
-                    style={[styles.buttons, styles.deleteButton]}>
-                      删除
-                  </Text>
+                  <View
+                    style={styles.listButtonsContainer}
+                  >
+                    <Text
+                      style={[styles.buttons, styles.reuseButton]}
+                      onPress={() => {reuseOperationPrompt(meal.name, meal.category);}}
+                    >
+                      复用
+                    </Text>
+                    <Text
+                      onPress={() => deleteMeal(meal.id)}
+                      style={[styles.buttons, styles.deleteButton]}>
+                        删除
+                    </Text>
+                  </View>
                 </View>
               );
             })
@@ -145,11 +258,21 @@ function App(): React.JSX.Element {
               return (
                 <View key={meal.id} style={styles.listItem}>
                   <Text>{i + 1 + '. ' + meal.name}</Text>
-                  <Text
-                    onPress={() => deleteMeal(meal.id)}
-                    style={[styles.buttons, styles.deleteButton]}>
-                      删除
-                  </Text>
+                  <View
+                    style={styles.listButtonsContainer}
+                  >
+                    <Text
+                      style={[styles.buttons, styles.reuseButton]}
+                      onPress={() => {reuseOperationPrompt(meal.name, meal.category);}}
+                    >
+                      复用
+                    </Text>
+                    <Text
+                      onPress={() => deleteMeal(meal.id)}
+                      style={[styles.buttons, styles.deleteButton]}>
+                        删除
+                    </Text>
+                  </View>
                 </View>
               );
             })
@@ -212,6 +335,14 @@ function App(): React.JSX.Element {
     informationPrompt('添加失败!');
   };
 
+  function reuseSuccess() {
+    informationPrompt('复用成功!');
+  }
+
+  function reuseFail() {
+    informationPrompt('复用失败!');
+  }
+
   // add new meal to the list, need to pass the meal name and category as the body in post request type
   const addNewMeal = async () => {
     // check if the input is empty
@@ -240,6 +371,29 @@ function App(): React.JSX.Element {
       addFail(); // show the prompt information
     }
   };
+
+  const reuseCreateNewMeal = async (mealName: string, mealCategory: string) => {
+    try {
+      const response = await fetch(`${baseUrl}/api/addMealItem`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: mealName,
+          category: mealCategory,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+      getAllMealListsFromApi(); // refresh the meal list
+      reuseSuccess(); // show the prompt information
+    } catch (error) {
+      console.error(error);
+      reuseFail(); // show the prompt information
+    }
+  }
+
 
   return (
     <View style={styles.container}>
@@ -332,6 +486,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
   },
+  listButtonsContainer: {
+    flexDirection: 'row',
+  },
   newMealContainer: {
     width: '100%',
     paddingLeft: 16,
@@ -377,10 +534,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#96EABD',
   },
+  reuseButton: {
+    borderRadius: 8,
+    backgroundColor: '#FFD700',
+    width: 44,
+    marginRight: 8,
+  },
   deleteButton: {
     borderRadius: 8,
     backgroundColor: '#FF6B6B',
+    width: 44,
   },
 });
 
 export default App;
+
+
