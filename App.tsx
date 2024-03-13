@@ -15,12 +15,15 @@ function App(): React.JSX.Element {
       ? 'breakfast'
       : date.getHours() < 14
       ? 'lunch'
-      : 'dinner',
-  ); // ['breakfast', 'lunch', 'dinner']
+      : date.getHours() < 21
+      ? 'dinner'
+      : 'midnight',
+  ); // ['breakfast', 'lunch', 'dinner', 'midnight'] 早餐 午餐 晚餐 夜宵
   const [mealLists, setMealLists] = useState({
     breakfast: [],
     lunch: [],
     dinner: [],
+    midnight: [],
   });
   const [newMealText, setNewMealText] = useState('');
   const [newMealCategory, setNewMealCategory] = useState('');
@@ -35,17 +38,19 @@ function App(): React.JSX.Element {
       `${baseUrl}/api/breakfastList`,
       `${baseUrl}/api/lunchList`,
       `${baseUrl}/api/dinnerList`,
-    ]; // breakfast, lunch, dinner
+      `${baseUrl}/api/midnightList`,
+    ]; // breakfast, lunch, dinner, midnight
 
     try {
       const responses = await Promise.all(urls.map(url => fetch(url)));
-      const [response1, response2, response3] = responses;
+      const [response1, response2, response3, response4] = responses;
 
       const {breakfast} = await response1.json();
       const {lunch} = await response2.json();
       const {dinner} = await response3.json();
+      const {midnight} = await response4.json();
       console.log(breakfast, lunch, dinner);
-      setMealLists({breakfast, lunch, dinner});
+      setMealLists({breakfast, lunch, dinner, midnight});
     } catch (error) {
       console.error(error);
     }
@@ -106,13 +111,37 @@ function App(): React.JSX.Element {
           )}
         </View>
       );
-    } else {
+    } else if (currentMealPeriod === 'dinner') {
       // return title dinner and content list of dinner
       return (
         <View style={styles.line}>
           {/* <Text style={styles.title}>晚餐</Text> */}
           {mealList.dinner.length > 0 ? (
             mealList.dinner.map((meal: { id: number; name: string, category: string }, i: number) => {
+              return (
+                <View key={meal.id} style={styles.listItem}>
+                  <Text>{i + 1 + '. ' + meal.name}</Text>
+                  <Text
+                    onPress={() => deleteMeal(meal.id)}
+                    style={[styles.buttons, styles.deleteButton]}>
+                      删除
+                  </Text>
+                </View>
+              );
+            })
+          ) : (
+            <Text style={styles.listItem}>还没想好哦</Text>
+          )}
+        </View>
+      );
+    } else {
+      // return title midnight and content list of midnight
+      return (
+        <View style={styles.line}>
+          {/* <Text style={styles.title}>夜宵</Text> */}
+          {mealList.midnight.length > 0 ? (
+            mealList.midnight.map(
+              (meal: {id: number; name: string, category: string}, i: number) => {
               return (
                 <View key={meal.id} style={styles.listItem}>
                   <Text>{i + 1 + '. ' + meal.name}</Text>
@@ -235,6 +264,7 @@ function App(): React.JSX.Element {
           <Picker.Item label="早餐" value="breakfast" />
           <Picker.Item label="午餐" value="lunch" />
           <Picker.Item label="晚餐" value="dinner" />
+          <Picker.Item label="夜宵" value="midnight" />
         </Picker>
       </View>
       {getMealElements(mealLists)}
@@ -257,6 +287,7 @@ function App(): React.JSX.Element {
             <Picker.Item label="早餐" value="breakfast" />
             <Picker.Item label="午餐" value="lunch" />
             <Picker.Item label="晚餐" value="dinner" />
+            <Picker.Item label="夜宵" value="midnight" />
           </Picker>
         </View>
         <Text
