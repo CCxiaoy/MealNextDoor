@@ -203,7 +203,7 @@ function App(): React.JSX.Element {
       const data = await response.json();
       console.log(data);
       setNewMealText(''); // clear the input box
-      setNewMealCategory(''); // clear the input box
+      // setNewMealCategory(''); // clear the input box (comment this line, because it cause user to select the category again and again in real cases, which is not user-friendly)
       getAllMealListsFromApi(); // refresh the meal list
       addSuccess(); // show the prompt information
     } catch (error) {
